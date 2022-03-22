@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <style media="screen and (min-width: 640px)">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .w {
+            width: 70%;
+            text-align: center;
+        }
+
+        .yiyan {
+            box-sizing: border-box;
+            margin: 100px auto;
+            margin-bottom: 10px;
+            height: 300px;
+            width: 500px;
+            border: 2px solid #66cc;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 5px 20px;
+            margin-left: 50%;
+            transform: translate(-50%, 0);
+        }
+    </style>
+    <style media="screen and (max-width: 640px)">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .w {
+            width: 70%;
+            text-align: center;
+        }
+
+        .yiyan {
+            box-sizing: border-box;
+            margin: 100px auto;
+            margin-bottom: 10px;
+            height: 80%;
+            width: 300px;
+            border: 2px solid #66cc;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        button {
+            padding: 5px 20px;
+            margin-left: 50%;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yiyan"></div>
+    <button id="new">更换</button>
+    <!-- 注意：只要为 audio 指定了新的 src 属性，而且指定了 autoplay，那么，语音就会自动播放 -->
+    <audio src="" id="voice" autoplay style="display: none;"></audio>
+    <script>
+        $(function () {
+            $(document).ready(function () {
+                newYiyan();
+            });
+
+            function newYiyan() {
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://api.uixsj.cn/hitokoto/get',
+                    data:{type:'hitokoto'},
+                    success: function (res) {
+                        $('.yiyan').empty().html(res);
+                        getVoice(res);
+                    }
+                })
+            }
+
+            // 更换 单击事件
+            $('#new').on('click', function () {
+                newYiyan();
+            })
+        })
+
+        //音频回复
+        function getVoice(text) {
+            $.ajax({
+                type: 'GET',
+                url: 'http://www.liulongbin.top:3006/api/synthesize',
+                data: {
+                    text: text
+                },
+                success: function (res) {
+                    if (res.status === 200) {
+                        $('#voice').attr('src', res.voiceUrl);
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
